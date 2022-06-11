@@ -1,11 +1,13 @@
 # READ THIS!!!
+# 1) This script uses colors to detect buttons and other stuff so MAKE SURE to use the default Fortnite color settings.
+# 2) This script SHOULD be compatible with any screen resolution (if not edit the variable "default_size" in "Zen.calculate()" to your screen resolution).
+# 3) Fortnite MUST be windowed and maximized (look at "fortnite.png").
+# 4) This script might get some updates in the future depending on Fortnite updates.
+# 5) This script has been tested ONLY on Windows 10 with the small taskbar setting.
+# 6) If there are any other problems look at the end of this file.
 #
-# 1) This script uses colors to detect buttons and other stuff so MAKE SURE to use the default Fortnite color settings
-# 2) This script SHOULD be compatible with any screen resolution (if not edit the variable "default_size" in "Zen.calculate()" to your screen resolution)
-# 3) Fortnite MUST be windowed and maximized (look at "fortnite.png")
-# 4) This script might get some updates in the future depending on Fortnite updates
-# 5) This script has been tested ONLY on Windows 10 with the small taskbar setting
-# 6) If there are any other problems look at the end of this file
+# IMPORTANT!!!
+# 1) If the script does nothing you can look at "settings.png" wich are the settings that the script has been developed on.
 #
 # Thank you for using this script and have fun!
 
@@ -14,32 +16,33 @@ import pyautogui
 import keyboard
 import win32api
 import win32con
+import ctypes
 import time
 import os
 
 class Zen():
     class fix():
         def get_mouse_position():
-            trigger_key = input("Enter a trigger key: ")
+            start_key = input("\nEnter a start key: ")
             stop_key = input("Enter a stop key: ")
             delay = input("Delay: ")
             while True:
                 time.sleep(float(delay))
-                if keyboard.is_pressed(trigger_key):
+                if keyboard.is_pressed(start_key):
                     print(pyautogui.position())
                 elif keyboard.is_pressed(stop_key):
-                    break
+                    exit()
 
         def get_mouse_position_color():
-            trigger_key = input("Enter a trigger key: ")
+            start_key = input("\nEnter a start key: ")
             stop_key = input("Enter a stop key: ")
             delay = input("Delay: ")
             while True:
                 time.sleep(float(delay))
-                if keyboard.is_pressed(trigger_key):
+                if keyboard.is_pressed(start_key):
                     print(pyautogui.screenshot().getpixel((pyautogui.position())))
                 elif keyboard.is_pressed(stop_key):
-                    break
+                    exit()
 
     def screen():
         width = GetSystemMetrics(0)
@@ -59,7 +62,9 @@ class Zen():
         return_to_lobby_pixel = (206 + offset_values[0], 981 + offset_values[1])
         confirm_pixel = (206 + offset_values[0], 981 + offset_values[1])
 
-        return ready_up_pixel, health_pixel, exit_pixel, return_to_lobby_pixel, confirm_pixel
+        reset_pixel = (round(screen_size[0] / 2), round(screen_size[1] / 2))
+
+        return ready_up_pixel, health_pixel, exit_pixel, return_to_lobby_pixel, confirm_pixel, reset_pixel
 
     def colors():
         ready_up_color = (247,255,25)
@@ -75,6 +80,7 @@ class Zen():
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
         time.sleep(0.1)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+        time.sleep(0.1)
 
     def keyboard_click(key):
         pyautogui.keyDown(key)
@@ -82,8 +88,10 @@ class Zen():
         pyautogui.keyUp(key)
 
     def log(progress):
-        if progress == 1:
-            print('Detected "Ready Up" button, entering game...')
+        if progress == 0:
+            print("Successfully stored values!")
+        elif progress == 1:
+            print('\nDetected "Ready Up" button, entering game...')
         elif progress == 2:
             print('Detected "Health" color, pressing escape...')
         elif progress == 3:
@@ -94,31 +102,42 @@ class Zen():
             print('Detected "Confirm" button, pressing button...')
             print("Done!")
 
-    def banner():
-        print("   ____         ")
-        print("  |_  /___ _ _  ")
-        print("   / // -_) ' \ ")
-        print("  /___\___|_||_|\n\n")
-
     def start():
-        Zen.banner()
+        ctypes.windll.kernel32.SetConsoleTitleW("Zen v2.0")
         os.system("color 06")
+
+        print("""    ______    ______    __   __     """)
+        print("""   /\___  \  /\  ___\  /\ "-.\ \    """)
+        print("""   \/_/  /__ \ \  __\  \ \ \-.  \   """)
+        print("""     /\_____\ \ \_____\ \ \_\\\\"\_\  """)
+        print("""     \/_____/  \/_____/  \/_/ \/_/  \n\n""")
 
         positions = Zen.calculate()
         colors = Zen.colors()
 
-        start_key = input("Enter a start key: ")
-        exit_key = input("Enter a stop key: ")
+        fix = input("Do you need to fix some values? (y/n): ")
+        if fix == "y":
+            selection = input("\nWhat do you need to fix:\n 1 -> positions\n 2 -> colors\n\nNumber: ")
+            if selection == "1":
+                Zen.fix.get_mouse_position()
+            elif selection == "2":
+                Zen.fix.get_mouse_position_color()
 
-        win32api.SetCursorPos((0, 0))
+        start_key = input("\nEnter a start key: ")
+        stop_key = input("Enter a stop key: ")
+        delay = input("Delay: ")
+        Zen.log(0)
+
         while True:
             time.sleep(0.05)
             if keyboard.is_pressed(start_key):
                 
                 progress = 0
                 while True:
+                    time.sleep(float(delay))
+
                     if pyautogui.screenshot().getpixel((positions[0])) == colors[0] and progress == 0:
-                        Zen.mouse_click(positions[0][0], positions[0][1]); win32api.SetCursorPos((0, 0))
+                        Zen.mouse_click(positions[0][0], positions[0][1]); win32api.SetCursorPos((positions[5]))
                         progress += 1
                         Zen.log(progress)
                         
@@ -128,28 +147,22 @@ class Zen():
                         Zen.log(progress)
 
                     elif pyautogui.screenshot().getpixel((positions[2])) == colors[2] and progress == 2:
-                        Zen.mouse_click(positions[2][0], positions[2][1]); win32api.SetCursorPos((0, 0))
+                        Zen.mouse_click(positions[2][0], positions[2][1]); win32api.SetCursorPos((positions[5]))
                         progress += 1
                         Zen.log(progress)
 
                     elif pyautogui.screenshot().getpixel((positions[3])) == colors[3] and progress == 3:
-                        Zen.mouse_click(positions[3][0], positions[3][1]); win32api.SetCursorPos((0, 0))
+                        Zen.mouse_click(positions[3][0], positions[3][1]); win32api.SetCursorPos((positions[5]))
                         progress += 1
                         Zen.log(progress)
 
                     elif pyautogui.screenshot().getpixel((positions[4])) == colors[4] and progress == 4:
-                        Zen.mouse_click(positions[4][0], positions[4][1]); win32api.SetCursorPos((0, 0))
+                        Zen.mouse_click(positions[4][0], positions[4][1]); win32api.SetCursorPos((positions[5]))
                         progress += 1
                         Zen.log(progress)
                         break
             
-            elif keyboard.is_pressed(exit_key):
-                break
+            elif keyboard.is_pressed(stop_key):
+                exit()
 
-Zen.start() # Main Function
-
-# If you need to fix some values for whatever reason you can use these two functions below here, if you use them MAKE SURE to comment out the main function "Zen.start()" and
-# use only one at a time.
-
-# Zen.fix.get_mouse_position()
-# Zen.fix.get_mouse_position_color()
+Zen.start() # Start Zen

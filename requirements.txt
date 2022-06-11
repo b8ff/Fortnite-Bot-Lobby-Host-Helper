@@ -1,0 +1,10 @@
+This are the modules that you need to make the script work
+
+pyautogui -> 0.9.53
+win32api
+keyboard
+win32con
+time
+os
+
+Python 3.8.6

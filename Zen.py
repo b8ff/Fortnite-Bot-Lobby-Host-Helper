@@ -4,10 +4,10 @@
 # 3) Fortnite MUST be windowed and maximized (look at "fortnite.png").
 # 4) This script might get some updates in the future depending on Fortnite updates.
 # 5) This script has been tested ONLY on Windows 10 with the small taskbar setting.
-# 6) If there are any other problems look at the end of this file.
 #
 # IMPORTANT!!!
-# 1) If the script does nothing you can look at "settings.png" wich are the settings that the script has been developed on.
+# 1) If the script does nothing you can look at "fortnite_settings.png" which are the settings that the script has been developed on.
+# 2) Look at "fortnite.mov" to see how the script should work.
 #
 # Thank you for using this script and have fun!
 
@@ -20,8 +20,8 @@ import ctypes
 import time
 import os
 
-class Zen():
-    class fix():
+class Zen:
+    class fix:
         def get_mouse_position():
             start_key = input("\nEnter a start key: ")
             stop_key = input("Enter a stop key: ")
@@ -56,7 +56,7 @@ class Zen():
 
         offset_values = (screen_size[0] - default_size[0], screen_size[1] - default_size[1])
 
-        ready_up_pixel = (1538 + offset_values[0], 794 + offset_values[1])
+        ready_up_pixel = (1538 + offset_values[0], 732 + offset_values[1])
         health_pixel = (157 + offset_values[0], 947 + offset_values[1])
         exit_pixel = (15 + offset_values[0], 984 + offset_values[1])
         return_to_lobby_pixel = (206 + offset_values[0], 981 + offset_values[1])
@@ -64,10 +64,12 @@ class Zen():
 
         reset_pixel = (round(screen_size[0] / 2), round(screen_size[1] / 2))
 
-        return ready_up_pixel, health_pixel, exit_pixel, return_to_lobby_pixel, confirm_pixel, reset_pixel
+        ready_up_pixel_fix = (944 + offset_values[0], 1011 + offset_values[1])
+
+        return ready_up_pixel, health_pixel, exit_pixel, return_to_lobby_pixel, confirm_pixel, reset_pixel, ready_up_pixel_fix
 
     def colors():
-        ready_up_color = (247,255,25)
+        ready_up_color = (0,0,116)
         health_color = (14,191,35)
         exit_color = (14,24,52)
         return_to_lobby_color = (0,73,169)
@@ -103,7 +105,7 @@ class Zen():
             print("Done!")
 
     def start():
-        ctypes.windll.kernel32.SetConsoleTitleW("Zen v2.0")
+        ctypes.windll.kernel32.SetConsoleTitleW("Zen v3.0")
         os.system("color 06")
 
         print("""    ______    ______    __   __     """)
@@ -136,7 +138,7 @@ class Zen():
                 while True:
                     time.sleep(float(delay))
 
-                    if pyautogui.screenshot().getpixel((positions[0])) == colors[0] and progress == 0:
+                    if pyautogui.screenshot().getpixel((positions[6])) == colors[0] and progress == 0:
                         Zen.mouse_click(positions[0][0], positions[0][1]); win32api.SetCursorPos((positions[5]))
                         progress += 1
                         Zen.log(progress)

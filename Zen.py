@@ -64,18 +64,19 @@ class Zen:
 
         reset_pixel = (round(screen_size[0] / 2), round(screen_size[1] / 2))
 
-        ready_up_pixel_fix = (944 + offset_values[0], 1011 + offset_values[1])
+        blue_bar_pixel = (944 + offset_values[0], 1011 + offset_values[1])
 
-        return ready_up_pixel, health_pixel, exit_pixel, return_to_lobby_pixel, confirm_pixel, reset_pixel, ready_up_pixel_fix
+        return ready_up_pixel, health_pixel, exit_pixel, return_to_lobby_pixel, confirm_pixel, reset_pixel, blue_bar_pixel
 
     def colors():
-        ready_up_color = (0,0,116)
+        blue_bar_color = (0,0,116)
+
         health_color = (14,191,35)
         exit_color = (14,24,52)
         return_to_lobby_color = (0,73,169)
         confirm_color = (0,73,169)
 
-        return ready_up_color, health_color, exit_color, return_to_lobby_color, confirm_color
+        return blue_bar_color, health_color, exit_color, return_to_lobby_color, confirm_color
 
     def mouse_click(x, y):
         win32api.SetCursorPos((x, y))
@@ -105,7 +106,7 @@ class Zen:
             print("Done!")
 
     def start():
-        ctypes.windll.kernel32.SetConsoleTitleW("Zen v3.0")
+        ctypes.windll.kernel32.SetConsoleTitleW("Zen v3.1")
         os.system("color 06")
 
         print("""    ______    ______    __   __     """)
